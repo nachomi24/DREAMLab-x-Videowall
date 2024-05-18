@@ -1,0 +1,121 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import url('https://fonts.googleapis.com/css2?family=Mina&display=swap');
+
+* {
+  font-family: 'Mina', sans-serif;
+  font-weight: bold;
+}
+
+.swiper {
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.swiper-slide div {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.cr-swiper-container {
+  display: contents;
+  position: relative;
+}
+
+.blur-style-cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.left-blur {
+  filter: blur(1vh);
+  width: 25%;
+  height: 100%;
+  background: linear-gradient(to right, #000000, #0a0022, #13003f); /* Cambiado a to right */
+}
+
+.right-blur {
+  filter: blur(1vh);
+  width: 25%;
+  height: 100%;
+  background: linear-gradient(to left, #000000, #0a0022, #13003f); /* Cambiado a to left */
+}
+
+.reservation-card {
+  margin: 1rem; /* Espaciado horizontal */
+  background-color: #E7F1FF;
+  box-shadow: 0 1px 3vh #E7F1FF, 0 0 3vh #E7F1FF;
+  border-radius: 1rem; /* Border radius */
+  padding: 1rem; /* Padding */
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: bolder;
+  width: 15vw; /* 15% del ancho de la pantalla */
+  height: 20vh; /* Altura fija */
+  overflow: hidden; /* Ocultar texto que no cabe */
+}
+
+.student-name {
+  margin-bottom: 0.5rem;
+  font-size: calc(0.5rem + 1vw); /* Tamaño de fuente responsivo */
+}
+
+.room-name {
+  font-size: calc(0.5rem + 0.75vw); /* Tamaño de fuente responsivo */
+}
+
+.time-range {
+  margin-top: 0.5rem;
+  font-size: calc(0.5rem + 0.75vw); /* Tamaño de fuente responsivo */
+}
+
+.student-name,
+.room-name,
+.time-range {
+  white-space: nowrap; /* Evitar que el texto se divida en líneas */
+  text-overflow: ellipsis; /* Mostrar puntos suspensivos si el texto no cabe */
+}
+
+.animated-text {
+  animation: slide-text var(--duration) infinite alternate linear;
+}
+
+@keyframes slide-text {
+  0% {
+    transform: translateX(calc(var(--percentage))); /* Usamos el 10% del porcentaje */
+  }
+  100% {
+    transform: translateX(calc(var(--percentage) - (2 * var(--percentage)))); /* Usamos el -10% del porcentaje */
+  }
+}
+
+.fecha-dia {
+  font-size: calc(0.5rem + 1vw); /* Tamaño de fuente responsivo */
+  margin-bottom: 0.5rem;
+}
+
+.fecha-fecha {
+  font-size: calc(0.5rem + 0.75vw); /* Tamaño de fuente responsivo */
+  margin-bottom: 0.5rem;
+}
+
+.fecha-hora {
+  font-size: calc(0.5rem + 0.75vw); /* Tamaño de fuente responsivo */
+}
