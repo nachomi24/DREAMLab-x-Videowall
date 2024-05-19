@@ -17,17 +17,50 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+  height: auto !important;
 }
 
-.swiper-slide div {
-  object-fit: cover;
+.swiper-slide-custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: auto !important;
+  width: 100%;
+}
+
+.card {
+  width: 15vw;
+  height: 15vw;
+  perspective: 1000px;
+  padding: 1rem;
+}
+
+.card-inner {
+  position: relative;
   width: 100%;
   height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
 }
 
-.cr-swiper-container {
-  display: contents;
-  position: relative;
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  box-shadow: 0 1px 1vh #E7F1FF, 0 0 3vh #E7F1FF;
+}
+
+.card-back {
+  transform: rotateY(180deg);
 }
 
 .blur-style-cards {
@@ -51,6 +84,10 @@
   width: 25%;
   height: 100%;
   background: linear-gradient(to left, #000000, #0a0022, #13003f); /* Cambiado a to left */
+}
+
+.background-gradient {
+  background: linear-gradient(to bottom, #000000, #17113d, #5915a6);
 }
 
 .reservation-card {
