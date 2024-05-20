@@ -26,7 +26,6 @@ const VideoWall = () => {
   const [reservaciones, setReservaciones] = useState([]);
   const [fechaActual, setFechaActual] = useState("");
   const [pausedColumns, setPausedColumns] = useState([]);
-  const [shuffledImages, setShuffledImages] = useState([]);
 
   useEffect(() => {
     const fetchReservaciones = async () => {
@@ -89,11 +88,6 @@ const VideoWall = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    // Barajar imágenes solo una vez cuando se carga el componente
-    setShuffledImages(shuffleArray(imageUrls));
-  }, []);
-
   const convertirHora = (hora) => {
     const [hour, minute] = hora.split(":");
     const ampm = hour >= 12 ? "PM" : "AM";
@@ -111,61 +105,33 @@ const VideoWall = () => {
     });
   };
 
-  const renderVerticalSwiper = (columnIndex) => {
+  const renderVerticalCarousel = (direction, columnIndex) => {
+    const isDown = direction === "down";
     const isPaused = pausedColumns.includes(columnIndex);
-    const direction = columnIndex % 2 === 0 ? "up" : "down";
-
     return (
-      <Swiper
-        direction="vertical"
-        slidesPerView={5}
-        spaceBetween={15}
-        mousewheel={true}
-        speed={7000}
-        loop={true}
-        autoplay={{
-          delay: 2,
-          disableOnInteraction: false,
-          reverseDirection: direction === "up",
-        }}
-        className={`vertical-swiper ${isPaused ? "paused" : ""}`}
-        modules={[FreeMode, Mousewheel, Autoplay]}
-        onClick={() => handleCardClick(columnIndex)}
-        style={{ maxHeight: "100%", height: "100%" }}
+      <div
+        className={`vertical-carousel ${isDown ? "scroll-down" : "scroll-up"} ${
+          isPaused ? "paused" : ""
+        }`}
       >
-        {shuffledImages.map((image, index) => (
-          <SwiperSlide key={index}>
-            <Card
-              image={image}
-              onClick={() => handleCardClick(columnIndex)}
-              isPaused={isPaused}
-            />
-          </SwiperSlide>
+        {imageUrls.map((image, index) => (
+          <Card
+            key={index}
+            image={image}
+            onClick={() => handleCardClick(columnIndex)}
+            isPaused={isPaused}
+          />
         ))}
-        {shuffledImages.map((image, index) => (
-          <SwiperSlide key={`duplicate-${index}`}>
-            <Card
-              image={image}
-              onClick={() => handleCardClick(columnIndex)}
-              isPaused={isPaused}
-            />
-          </SwiperSlide>
+        {imageUrls.map((image, index) => (
+          <Card
+            key={`duplicate-${index}`}
+            image={image}
+            onClick={() => handleCardClick(columnIndex)}
+            isPaused={isPaused}
+          />
         ))}
-      </Swiper>
+      </div>
     );
-  };
-
-  // Función para barajar un array
-  const shuffleArray = (array) => {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArray[i], shuffledArray[j]] = [
-        shuffledArray[j],
-        shuffledArray[i],
-      ];
-    }
-    return shuffledArray;
   };
 
   return (
@@ -181,7 +147,7 @@ const VideoWall = () => {
                 loop={true}
                 mousewheel={true}
                 freeMode={true}
-                speed={7000}
+                speed={5000}
                 autoplay={{
                   delay: 2,
                   disableOnInteraction: false,
@@ -236,12 +202,10 @@ const VideoWall = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-8 flex-1" style={{ maxHeight: "100%" }}>
+      <div className="grid grid-cols-8 flex-1 background-gradient">
         {Array.from({ length: 7 }).map((_, i) => (
-          <div className="overflow-hidden">
-            <div key={i} className="column">
-              {renderVerticalSwiper(i)}
-            </div>
+          <div key={i} className="column">
+            {renderVerticalCarousel(i % 2 === 0 ? "down" : "up", i)}
           </div>
         ))}
         <div className="col-span-1 flex items-start justify-center relative">

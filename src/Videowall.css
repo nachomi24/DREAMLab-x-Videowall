@@ -10,7 +10,6 @@
 }
 
 body {
-  overflow: hidden;
   background: linear-gradient(to bottom, #000000, #17113d, #5915a6);
   background-attachment: fixed;
 }
