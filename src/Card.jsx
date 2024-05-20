@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./Card.css";
 
-const Card = ({ image, onClick, isFlipped, isPaused }) => {
+const Card = ({ image, onClick, isPaused }) => {
   const [flipped, setFlipped] = useState(false);
 
   const handleCardClick = () => {
