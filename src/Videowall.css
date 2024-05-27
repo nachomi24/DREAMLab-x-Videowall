@@ -174,3 +174,9 @@ body {
 .manejo-reservas {
   font-size: calc(0.5rem + 2vw);
 }
+
+.dreamlab {
+  height: 15vh;
+  align-self: center;
+  align-content: center;
+}

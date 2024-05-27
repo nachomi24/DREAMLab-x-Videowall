@@ -6,33 +6,20 @@ import Card from "./Card";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/autoplay";
-import fotochat from "./chatyipiti.png";
-import apol from "./apol.png";
-import meta from "./meta.png";
 import "./Videowall.css";
 import DreamLab from "./DreamLab.png";
 
-const imageUrls = [
-  {
-    src: fotochat,
-    title: "Chatyipiti",
-    description: "Descripción de Chatyipiti",
-  },
-  { src: apol, title: "Apol", description: "Descripción de Apol" },
-  { src: meta, title: "Meta", description: "Descripción de Meta" },
-];
-
 const VideoWall = () => {
   const [reservaciones, setReservaciones] = useState([]);
+  const [publicaciones, setPublicaciones] = useState([]);
   const [fechaActual, setFechaActual] = useState("");
   const [pausedColumns, setPausedColumns] = useState([]);
-  const [shuffledImages, setShuffledImages] = useState([]);
 
   useEffect(() => {
     const fetchReservaciones = async () => {
       try {
         const response = await axios.get(
-          "https://devspaceapi2.azurewebsites.net/api/info_reservaciones"
+          "https://dreamlabapidev.azurewebsites.net/api/info_reservaciones"
         );
         setReservaciones(response.data);
       } catch (error) {
@@ -40,7 +27,19 @@ const VideoWall = () => {
       }
     };
 
+    const fetchPublicaciones = async () => {
+      try {
+        const response = await axios.get(
+          "https://dreamlabapidev.azurewebsites.net/api/publicaciones"
+        );
+        setPublicaciones(response.data);
+      } catch (error) {
+        console.error("Error fetching publicaciones:", error);
+      }
+    };
+
     fetchReservaciones();
+    fetchPublicaciones();
 
     const actualizarFecha = () => {
       const fecha = new Date();
@@ -89,11 +88,6 @@ const VideoWall = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    // Barajar imágenes solo una vez cuando se carga el componente
-    setShuffledImages(shuffleArray(imageUrls));
-  }, []);
-
   const convertirHora = (hora) => {
     const [hour, minute] = hora.split(":");
     const ampm = hour >= 12 ? "PM" : "AM";
@@ -126,26 +120,17 @@ const VideoWall = () => {
         autoplay={{
           delay: 2,
           disableOnInteraction: false,
-          reverseDirection: direction === "up",
+          reverseDirection: direction === "down",
         }}
         className={`vertical-swiper ${isPaused ? "paused" : ""}`}
         modules={[FreeMode, Mousewheel, Autoplay]}
         onClick={() => handleCardClick(columnIndex)}
         style={{ maxHeight: "100%", height: "100%" }}
       >
-        {shuffledImages.map((image, index) => (
+        {publicaciones.map((publicacion, index) => (
           <SwiperSlide key={index}>
             <Card
-              image={image}
-              onClick={() => handleCardClick(columnIndex)}
-              isPaused={isPaused}
-            />
-          </SwiperSlide>
-        ))}
-        {shuffledImages.map((image, index) => (
-          <SwiperSlide key={`duplicate-${index}`}>
-            <Card
-              image={image}
+              publicacion={publicacion}
               onClick={() => handleCardClick(columnIndex)}
               isPaused={isPaused}
             />
@@ -153,19 +138,6 @@ const VideoWall = () => {
         ))}
       </Swiper>
     );
-  };
-
-  // Función para barajar un array
-  const shuffleArray = (array) => {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArray[i], shuffledArray[j]] = [
-        shuffledArray[j],
-        shuffledArray[i],
-      ];
-    }
-    return shuffledArray;
   };
 
   return (
@@ -238,18 +210,23 @@ const VideoWall = () => {
 
       <div className="grid grid-cols-8 flex-1" style={{ maxHeight: "100%" }}>
         {Array.from({ length: 7 }).map((_, i) => (
-          <div className="overflow-hidden">
-            <div key={i} className="column">
+          <div className="overflow-hidden" key={i}>
+            <div className="column">
               {renderVerticalSwiper(i)}
             </div>
           </div>
         ))}
         <div className="col-span-1 flex items-start justify-center relative">
-          <div className="text-white text-center p-4 z-10">
-            <p className="bienvenida">BIENVENIDX</p>
-            <p className="bienvenida-peque">a</p>
+          <div className="text-white text-center p-4 z-10 justify-center items-center">
+            <p className="bienvenida">WELCOME</p>
+            <p className="bienvenida-peque">TO</p>
             <img src={DreamLab} alt="DreamLab" className="dreamlab" />
             <p className="bienvenida">D.R.E.A.M. LAB</p>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?data=https://devspaceapp.azurewebsites.net/&size=100x100`}
+              alt="QR Code"
+              className="qr-code"
+            />
           </div>
         </div>
       </div>
