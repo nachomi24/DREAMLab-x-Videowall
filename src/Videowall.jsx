@@ -105,37 +105,79 @@ const VideoWall = () => {
     });
   };
 
-  const renderVerticalSwiper = (columnIndex) => {
-    const isPaused = pausedColumns.includes(columnIndex);
-    const direction = columnIndex % 2 === 0 ? "up" : "down";
+  const shouldEnableLoop = (slides, slidesPerView) => {
+    return slides.length > slidesPerView;
+  };
 
+  const renderVerticalCarousel = (columnIndex) => {
+    const isPaused = pausedColumns.includes(columnIndex);
+    const direction = columnIndex % 2 === 0 ? "scroll-up" : "scroll-down";
+  
     return (
-      <Swiper
-        direction="vertical"
-        slidesPerView={5}
-        spaceBetween={15}
-        mousewheel={true}
-        speed={7000}
-        loop={true}
-        autoplay={{
-          delay: 2,
-          disableOnInteraction: false,
-          reverseDirection: direction === "down",
-        }}
-        className={`vertical-swiper ${isPaused ? "paused" : ""}`}
-        modules={[FreeMode, Mousewheel, Autoplay]}
+      <div
+        className={`vertical-carousel ${direction} ${
+          isPaused ? "paused" : ""
+        }`}
         onClick={() => handleCardClick(columnIndex)}
-        style={{ maxHeight: "100%", height: "100%" }}
       >
         {publicaciones.map((publicacion, index) => (
-          <SwiperSlide key={index}>
+          <div key={index} className="carousel-slide">
             <Card
               publicacion={publicacion}
               onClick={() => handleCardClick(columnIndex)}
               isPaused={isPaused}
             />
-          </SwiperSlide>
+          </div>
         ))}
+      </div>
+    );
+  };
+  
+
+  const renderHorizontalSwiper = () => {
+    const loop = shouldEnableLoop(reservaciones, 4);
+
+    return (
+      <Swiper
+        modules={[FreeMode, Mousewheel, Autoplay]}
+        slidesPerView={4}
+        spaceBetween={20}
+        loop={loop}
+        mousewheel={true}
+        freeMode={true}
+        speed={7000}
+        autoplay={{
+          delay: 1,
+          disableOnInteraction: false,
+        }}
+        className="mySwiper"
+      >
+        {reservaciones.map((reservacion, index) => {
+          const textLength = reservacion.NombreEstudiante.length;
+          const percentage = Math.min(textLength * 0.75, 100); // Porcentaje máximo de 100%
+          const duration = Math.min(textLength * 0.25, 10); // Duración mínima de 10 segundos
+
+          return (
+            <SwiperSlide key={index}>
+              <div className="reservation-card">
+                <p
+                  className="student-name animated-text"
+                  style={{
+                    "--duration": `${duration}s`,
+                    "--percentage": `${percentage}%`,
+                  }}
+                >
+                  {reservacion.NombreEstudiante}
+                </p>
+                <p className="room-name">{reservacion.NombreSala}</p>
+                <p className="time-range">
+                  {convertirHora(reservacion.HoraInicio)} -{" "}
+                  {convertirHora(reservacion.HoraFin)}
+                </p>
+              </div>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     );
   };
@@ -145,49 +187,7 @@ const VideoWall = () => {
       <div className="grid grid-cols-8">
         <div className="col-span-7">
           {reservaciones && reservaciones.length > 0 ? (
-            <div className="overflow-hidden">
-              <Swiper
-                modules={[FreeMode, Mousewheel, Autoplay]}
-                slidesPerView={4}
-                spaceBetween={20}
-                loop={true}
-                mousewheel={true}
-                freeMode={true}
-                speed={7000}
-                autoplay={{
-                  delay: 2,
-                  disableOnInteraction: false,
-                }}
-                className="mySwiper"
-              >
-                {reservaciones.map((reservacion, index) => {
-                  const textLength = reservacion.NombreEstudiante.length;
-                  const percentage = Math.min(textLength * 0.75, 100); // Porcentaje máximo de 100%
-                  const duration = Math.min(textLength * 0.25, 10); // Duración mínima de 10 segundos
-
-                  return (
-                    <SwiperSlide key={index}>
-                      <div className="reservation-card">
-                        <p
-                          className="student-name animated-text"
-                          style={{
-                            "--duration": `${duration}s`,
-                            "--percentage": `${percentage}%`,
-                          }}
-                        >
-                          {reservacion.NombreEstudiante}
-                        </p>
-                        <p className="room-name">{reservacion.NombreSala}</p>
-                        <p className="time-range">
-                          {convertirHora(reservacion.HoraInicio)} -{" "}
-                          {convertirHora(reservacion.HoraFin)}
-                        </p>
-                      </div>
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
-            </div>
+            <div className="overflow-hidden">{renderHorizontalSwiper()}</div>
           ) : (
             <div
               style={{ height: "100%", color: "white" }}
@@ -211,9 +211,7 @@ const VideoWall = () => {
       <div className="grid grid-cols-8 flex-1" style={{ maxHeight: "100%" }}>
         {Array.from({ length: 7 }).map((_, i) => (
           <div className="overflow-hidden" key={i}>
-            <div className="column">
-              {renderVerticalSwiper(i)}
-            </div>
+            <div className="column">{renderVerticalCarousel(i)}</div>
           </div>
         ))}
         <div className="col-span-1 flex items-start justify-center relative">
