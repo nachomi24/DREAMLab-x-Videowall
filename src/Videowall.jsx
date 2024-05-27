@@ -105,9 +105,10 @@ const VideoWall = () => {
     });
   };
 
-  const renderVerticalCarousel = (direction, columnIndex) => {
-    const isDown = direction === "down";
+  const renderVerticalSwiper = (columnIndex) => {
     const isPaused = pausedColumns.includes(columnIndex);
+    const direction = columnIndex % 2 === 0 ? "up" : "down";
+
     return (
       <Swiper
         direction="vertical"
@@ -135,7 +136,7 @@ const VideoWall = () => {
             />
           </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
     );
   };
 
@@ -152,7 +153,7 @@ const VideoWall = () => {
                 loop={true}
                 mousewheel={true}
                 freeMode={true}
-                speed={5000}
+                speed={7000}
                 autoplay={{
                   delay: 2,
                   disableOnInteraction: false,
@@ -207,7 +208,7 @@ const VideoWall = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-8 flex-1 background-gradient">
+      <div className="grid grid-cols-8 flex-1" style={{ maxHeight: "100%" }}>
         {Array.from({ length: 7 }).map((_, i) => (
           <div className="overflow-hidden" key={i}>
             <div className="column">
