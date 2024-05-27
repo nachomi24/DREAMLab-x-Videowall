@@ -7,11 +7,13 @@
 * {
   font-family: 'Mina', sans-serif;
   font-weight: 700;
+  
 }
 
 body {
   background: linear-gradient(to bottom, #000000, #17113d, #5915a6);
   background-attachment: fixed;
+  overflow: hidden;
 }
 
 .swiper {
@@ -121,16 +123,16 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* Asegura que el contenido adicional no cause que la página se alargue */
   position: relative;
 }
 
 .vertical-carousel.scroll-down {
-  animation: scroll-down 10s linear infinite;
+  animation: scroll-down 20s linear infinite;
 }
 
 .vertical-carousel.scroll-up {
-  animation: scroll-up 10s linear infinite;
+  animation: scroll-up 20s linear infinite;
 }
 
 .vertical-carousel.paused {
@@ -155,11 +157,16 @@ body {
   }
 }
 
+.carousel-slide {
+  height: calc(20% - 15px); /* Ajustar el tamaño de cada slide según el espacio y la separación */
+  margin-bottom: 15px; /* Ajustar el espacio entre slides */
+}
+
 .column {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  overflow: hidden; /* Asegura que el contenido adicional no cause que la página se alargue */
 }
 
 .bienvenida {
@@ -176,6 +183,12 @@ body {
 
 .dreamlab {
   height: 15vh;
-  align-self: center;
-  align-content: center;
+  display: block; /* Asegura que la imagen se muestre como bloque para aplicar márgenes automáticos */
+  margin: 0 auto; /* Centra horizontalmente */
+}
+
+.qr-code {
+  height: 15vh;
+  display: block; /* Asegura que la imagen se muestre como bloque para aplicar márgenes automáticos */
+  margin: 0 auto; /* Centra horizontalmente */
 }
