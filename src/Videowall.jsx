@@ -6,24 +6,12 @@ import Card from "./Card";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/autoplay";
-import fotochat from "./chatyipiti.png";
-import apol from "./apol.png";
-import meta from "./meta.png";
 import "./Videowall.css";
 import DreamLab from "./DreamLab.png";
 
-const imageUrls = [
-  {
-    src: fotochat,
-    title: "Chatyipiti",
-    description: "Descripción de Chatyipiti",
-  },
-  { src: apol, title: "Apol", description: "Descripción de Apol" },
-  { src: meta, title: "Meta", description: "Descripción de Meta" },
-];
-
 const VideoWall = () => {
   const [reservaciones, setReservaciones] = useState([]);
+  const [publicaciones, setPublicaciones] = useState([]);
   const [fechaActual, setFechaActual] = useState("");
   const [pausedColumns, setPausedColumns] = useState([]);
 
@@ -31,7 +19,7 @@ const VideoWall = () => {
     const fetchReservaciones = async () => {
       try {
         const response = await axios.get(
-          "https://devspaceapi2.azurewebsites.net/api/info_reservaciones"
+          "https://dreamlabapidev.azurewebsites.net/api/info_reservaciones"
         );
         setReservaciones(response.data);
       } catch (error) {
@@ -39,7 +27,19 @@ const VideoWall = () => {
       }
     };
 
+    const fetchPublicaciones = async () => {
+      try {
+        const response = await axios.get(
+          "https://dreamlabapidev.azurewebsites.net/api/publicaciones"
+        );
+        setPublicaciones(response.data);
+      } catch (error) {
+        console.error("Error fetching publicaciones:", error);
+      }
+    };
+
     fetchReservaciones();
+    fetchPublicaciones();
 
     const actualizarFecha = () => {
       const fecha = new Date();
@@ -109,26 +109,31 @@ const VideoWall = () => {
     const isDown = direction === "down";
     const isPaused = pausedColumns.includes(columnIndex);
     return (
-      <div
-        className={`vertical-carousel ${isDown ? "scroll-down" : "scroll-up"} ${
-          isPaused ? "paused" : ""
-        }`}
+      <Swiper
+        direction="vertical"
+        slidesPerView={5}
+        spaceBetween={15}
+        mousewheel={true}
+        speed={7000}
+        loop={true}
+        autoplay={{
+          delay: 2,
+          disableOnInteraction: false,
+          reverseDirection: direction === "down",
+        }}
+        className={`vertical-swiper ${isPaused ? "paused" : ""}`}
+        modules={[FreeMode, Mousewheel, Autoplay]}
+        onClick={() => handleCardClick(columnIndex)}
+        style={{ maxHeight: "100%", height: "100%" }}
       >
-        {imageUrls.map((image, index) => (
-          <Card
-            key={index}
-            image={image}
-            onClick={() => handleCardClick(columnIndex)}
-            isPaused={isPaused}
-          />
-        ))}
-        {imageUrls.map((image, index) => (
-          <Card
-            key={`duplicate-${index}`}
-            image={image}
-            onClick={() => handleCardClick(columnIndex)}
-            isPaused={isPaused}
-          />
+        {publicaciones.map((publicacion, index) => (
+          <SwiperSlide key={index}>
+            <Card
+              publicacion={publicacion}
+              onClick={() => handleCardClick(columnIndex)}
+              isPaused={isPaused}
+            />
+          </SwiperSlide>
         ))}
       </div>
     );
@@ -204,16 +209,23 @@ const VideoWall = () => {
 
       <div className="grid grid-cols-8 flex-1 background-gradient">
         {Array.from({ length: 7 }).map((_, i) => (
-          <div key={i} className="column">
-            {renderVerticalCarousel(i % 2 === 0 ? "down" : "up", i)}
+          <div className="overflow-hidden" key={i}>
+            <div className="column">
+              {renderVerticalSwiper(i)}
+            </div>
           </div>
         ))}
         <div className="col-span-1 flex items-start justify-center relative">
-          <div className="text-white text-center p-4 z-10">
-            <p className="bienvenida">BIENVENIDX</p>
-            <p className="bienvenida-peque">a</p>
+          <div className="text-white text-center p-4 z-10 justify-center items-center">
+            <p className="bienvenida">WELCOME</p>
+            <p className="bienvenida-peque">TO</p>
             <img src={DreamLab} alt="DreamLab" className="dreamlab" />
             <p className="bienvenida">D.R.E.A.M. LAB</p>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?data=https://devspaceapp.azurewebsites.net/&size=100x100`}
+              alt="QR Code"
+              className="qr-code"
+            />
           </div>
         </div>
       </div>
