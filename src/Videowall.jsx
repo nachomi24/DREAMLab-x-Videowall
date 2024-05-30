@@ -109,38 +109,39 @@ const VideoWall = () => {
     return slides.length > slidesPerView;
   };
 
-  const renderVerticalCarousel = (columnIndex) => {
-    const isPaused = pausedColumns.includes(columnIndex);
-    const direction = columnIndex % 2 === 0 ? "scroll-up" : "scroll-down";
-  
-    return (
-      <div
-        className={`vertical-carousel ${direction} ${
-          isPaused ? "paused" : ""
-        }`}
-        onClick={() => handleCardClick(columnIndex)}
-      >
-        {publicaciones.map((publicacion, index) => (
-          <div key={index} className="carousel-slide">
-            <Card
-              publicacion={publicacion}
-              onClick={() => handleCardClick(columnIndex)}
-              isPaused={isPaused}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  };
-  
+  // Dentro del componente VideoWall
+const renderVerticalCarousel = (columnIndex) => {
+  const isPaused = pausedColumns.includes(columnIndex);
+  const direction = columnIndex % 2 === 0 ? "scroll-up" : "scroll-down";
+
+  return (
+    <div className={`vertical-carousel ${isPaused ? "paused" : ""}`}>
+      {publicaciones.map((publicacion, index) => (
+        <div
+          key={index}
+          className={`carousel-slide ${direction}`}
+          style={{ animationDelay: `${index * 5}s` }}
+        >
+          <Card
+            publicacion={publicacion}
+            onClick={() => handleCardClick(columnIndex)}
+            isPaused={isPaused}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 
   const renderHorizontalSwiper = () => {
-    const loop = shouldEnableLoop(reservaciones, 4);
+    const slidesPerView = 4;
+    const loop = shouldEnableLoop(reservaciones, slidesPerView);
 
     return (
       <Swiper
         modules={[FreeMode, Mousewheel, Autoplay]}
-        slidesPerView={4}
+        slidesPerView={slidesPerView}
         spaceBetween={20}
         loop={loop}
         mousewheel={true}
